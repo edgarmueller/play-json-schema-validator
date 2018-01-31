@@ -3,6 +3,7 @@ package com.eclipsesource.schema.internal.serialization
 import com.eclipsesource.schema._
 import com.eclipsesource.schema.internal.Keywords
 import com.eclipsesource.schema.internal.constraints.Constraints._
+import com.eclipsesource.schema.internal.refs.{Ref, Refs}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._

@@ -61,6 +61,8 @@ case class GenRefResolver[A : CanHaveRef : Reads]
   private[schema] def resolve(current: A, ref: Ref, scope: GenResolutionScope[A])
                              (implicit lang: Lang): \/[JsonValidationError, ResolvedResult[A]] = {
 
+    def hasRef(obj: A)  = refTypeClass.findRef(obj).fold(false)(r => !scope.hasBeenVisited(r))
+
     // update resolution scope, if applicable
     val updatedScope = updateResolutionScope(scope.copy(depth = scope.depth + 1), current)
 
