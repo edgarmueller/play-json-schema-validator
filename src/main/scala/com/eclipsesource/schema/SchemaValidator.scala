@@ -24,12 +24,17 @@ trait HasLang {
 /**
   * The schema validator.
   *
-  * @param refResolver the reference resolver
   */
-case class SchemaValidator(refResolver: SchemaRefResolver = new SchemaRefResolver,
-                           formats: Map[String, SchemaFormat] = DefaultFormats.formats)
+case class SchemaValidator(
+                            formats: Map[String, SchemaFormat] = DefaultFormats.formats,
+                            schemaVersion: SchemaVersion = Version4
+                          )
                           (implicit val lang: Lang = Lang.Default)
   extends Customizations with HasLang {
+
+  import schemaVersion._
+
+  val refResolver: SchemaRefResolver = new SchemaRefResolver
 
   /**
     * Add a URLStreamHandler that is capable of handling absolute with a specific scheme.
@@ -37,10 +42,11 @@ case class SchemaValidator(refResolver: SchemaRefResolver = new SchemaRefResolve
     * @param handler the UrlHandler to be added
     * @return a new validator instance
     */
-  def addUrlHandler(handler: URLStreamHandler, scheme: String): SchemaValidator =
-    copy(refResolver =
-      refResolver.copy(resolverFactory =
-        refResolver.resolverFactory.addUrlHandler(scheme, handler)))
+  def addUrlHandler(handler: URLStreamHandler, scheme: String): SchemaValidator = {
+    // TODO
+    refResolver.resolverFactory = refResolver.resolverFactory.addUrlHandler(scheme, handler)
+    this
+  }
 
   /**
     * Add a relative URLStreamHandler that is capable of resolving relative references.
@@ -50,10 +56,11 @@ case class SchemaValidator(refResolver: SchemaRefResolver = new SchemaRefResolve
     * @param handler the relative handler to be added
     * @return the validator instance with the handler being added
     */
-  def addRelativeUrlHandler(handler: URLStreamHandler, scheme: String = UrlHandler.ProtocolLessScheme): SchemaValidator =
-    copy(refResolver =
-      refResolver.copy(resolverFactory =
-        refResolver.resolverFactory.addRelativeUrlHandler(scheme, handler)))
+  def addRelativeUrlHandler(handler: URLStreamHandler, scheme: String = UrlHandler.ProtocolLessScheme): SchemaValidator = {
+    // TODO
+    refResolver.resolverFactory = refResolver.resolverFactory.addRelativeUrlHandler(scheme, handler)
+    this
+  }
 
 
   /**
@@ -72,10 +79,9 @@ case class SchemaValidator(refResolver: SchemaRefResolver = new SchemaRefResolve
     * @param schema the schema
     */
   def addSchema(id: String, schema: SchemaType): SchemaValidator = {
-    copy(refResolver =
-      refResolver.copy(cache =
-        refResolver.cache.add(Ref(id))(schema))
-    )
+    // TODO
+    refResolver.cache = refResolver.cache.add(Ref(id))(schema)
+    this
   }
 
   private def buildContext(schema: SchemaType, schemaUrl: URL): SchemaResolutionContext = {

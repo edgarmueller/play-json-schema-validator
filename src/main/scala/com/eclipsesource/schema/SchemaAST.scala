@@ -43,6 +43,10 @@ final case class Definitions(members: Seq[SchemaAttribute]) extends SchemaType {
   override def constraints: HasAnyConstraint = NoConstraints()
 }
 
+final case class Dependencies(members: Seq[SchemaAttribute]) extends SchemaType {
+  override def constraints: HasAnyConstraint = NoConstraints()
+}
+
 
 final case class SchemaObject(properties: Seq[SchemaAttribute] = Seq.empty,
                               constraints: ObjectConstraints = ObjectConstraints(),

@@ -4,5 +4,14 @@ import com.eclipsesource.schema.test.JsonSpec
 import org.specs2.mutable.Specification
 
 class MaximumSpec extends Specification  with JsonSpec {
-  validate("maximum")
+
+  "maximum draft4" in {
+    import Version4._
+    validate("maximum")
+  }
+
+  "maximum draft7" in {
+    import Version7._
+    validate("maximum", "draft7")
+  }
 }

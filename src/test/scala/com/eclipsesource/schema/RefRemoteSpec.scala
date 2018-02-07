@@ -13,6 +13,7 @@ class RefRemoteSpec extends Specification with JsonSpec {
     .routes(Assets.routes(getClass)).build()
 
   "remote ref - remote ref invalid" in new WithServer(createApp, port = 1234) {
+    import Version4._
     val validator = SchemaValidator()
     val schema = JsonSource.schemaFromString(
       """ { "$ref": "http://localhost:1234/remotes/integer.json" } """.stripMargin
@@ -26,6 +27,7 @@ class RefRemoteSpec extends Specification with JsonSpec {
   }
 
   "fragment within remote ref - remote fragment invalid" in new WithServer(createApp, port = 1234)  {
+    import Version4._
     val schema = JsonSource.schemaFromString(
       """{"$ref": "http://localhost:1234/remotes/subSchemas.json#/integer"}"""
     ).get
@@ -38,6 +40,7 @@ class RefRemoteSpec extends Specification with JsonSpec {
   }
 
   "ref within remote ref - ref within ref invalid" in new WithServer(createApp, port = 1234) {
+    import Version4._
     val schema = JsonSource.schemaFromString(
       """{ "$ref": "http://localhost:1234/remotes/subSchemas.json#/refToInteger" }"""
     ).get
@@ -50,6 +53,7 @@ class RefRemoteSpec extends Specification with JsonSpec {
   }
 
   "change resolution scope - change scope ref invalid" in new WithServer(createApp, port = 1234) {
+    import Version4._
     val schema = JsonSource.schemaFromString(
       """{
         |  "id": "http://localhost:1234/",
@@ -69,6 +73,7 @@ class RefRemoteSpec extends Specification with JsonSpec {
   }
 
   "change resolution scope - change scope ref invalid" in new WithServer(createApp, port = 1234) {
+    import Version4._
     val schema = JsonSource.schemaFromString(
       """{
         |  "id": "http://localhost:1234/remotes/",

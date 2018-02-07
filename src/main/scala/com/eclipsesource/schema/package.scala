@@ -11,9 +11,7 @@ import play.api.libs.json._
 import scalaz.{-\/, Failure, Success, \/-}
 
 package object schema
-  extends SchemaOps
-    with JSONSchemaWrites
-    with JSONSchemaReads {
+  extends SchemaOps {
 
   import SchemaRefResolver._
 
@@ -65,6 +63,18 @@ package object schema
 
     private[schema] def doValidate(json: JsValue, context: SchemaResolutionContext)(implicit lang: Lang) = {
       (json, schemaType) match {
+
+        // TODO should we introduce AST nodes for boolean schemas?
+        case (_, SchemaValue(JsBoolean(false))) =>
+          Results.failureWithPath(
+            "",
+            Messages("err.false.schema", schemaType, SchemaUtil.typeOfAsString(json)),
+            context,
+            json)
+
+        case (_, SchemaValue(JsBoolean(true))) =>
+          Success(json)
+
 
         case (_: JsObject, schemaObject: SchemaObject) =>
           schemaObject.validateConstraints(json, context)

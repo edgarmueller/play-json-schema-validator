@@ -82,6 +82,14 @@ object SchemaRefResolver {
           case _ => Left(JsonValidationError(Messages("arr.invalid.index", fragmentPart)))
         }
 
+        case CompoundSchemaType(alternatives) =>
+          val results = alternatives.map(
+            alternative => resolve(alternative, fragmentPart)
+          )
+          results
+            .collectFirst { case r@Right(_) => r }
+            .getOrElse(Left(JsonValidationError(Messages("err.unresolved.ref", fragmentPart))))
+
         case p: PrimitiveSchemaType => resolveConstraint(p, fragmentPart)
       }
     }

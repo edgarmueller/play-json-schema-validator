@@ -6,9 +6,21 @@ import org.specs2.mutable.Specification
 import play.api.libs.json.JsString
 
 class MinLengthSpec extends Specification with JsonSpec {
-  validate("minLength")
+
+
+  "validate draft4" in {
+    import Version4._
+    validate("minLength")
+  }
+
+  "validate draft7" in {
+    import Version7._
+    validate("minLength", "draft7")
+  }
 
   "MinLength" should {
+
+    import Version4._
 
     "validate against numeric strings that are long enough" in {
       val schema = JsonSource.schemaFromString(

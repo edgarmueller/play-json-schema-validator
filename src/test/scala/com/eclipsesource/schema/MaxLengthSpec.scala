@@ -5,9 +5,19 @@ import org.specs2.mutable.Specification
 import play.api.libs.json._
 
 class MaxLengthSpec extends Specification with JsonSpec {
-  validate("maxLength")
+
+  "maxLength draft4" in {
+    import Version4._
+    validate("maxLength")
+  }
+
+  "maxLength draft7" in {
+    import Version7._
+    validate("maxLength", "draft7")
+  }
 
   "MaxLength" should {
+    import Version4._
     "fail with an error in case the string is too long" in {
       val schema = JsonSource.schemaFromString(
         """{

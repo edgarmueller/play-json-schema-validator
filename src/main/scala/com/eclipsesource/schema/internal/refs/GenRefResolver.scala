@@ -21,8 +21,8 @@ case class ResolvedResult[A](resolved: A, scope: GenResolutionScope[A])
   */
 case class GenRefResolver[A : CanHaveRef : Reads]
 (
-  resolverFactory: UrlStreamResolverFactory = UrlStreamResolverFactory(),
-  // FIXME: try to avoid var here
+  // TODO: try to avoid vars here
+  var resolverFactory: UrlStreamResolverFactory = UrlStreamResolverFactory(),
   private[schema] var cache: DocumentCache[A] = DocumentCache[A]()
 ) {
 

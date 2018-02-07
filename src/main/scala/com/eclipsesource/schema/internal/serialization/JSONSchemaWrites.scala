@@ -6,7 +6,7 @@ import com.eclipsesource.schema.internal.constraints.Constraints._
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.libs.json._
 
-trait JSONSchemaWrites {
+trait JSONSchemaWrites { self: SchemaVersion =>
 
   implicit def schemaTypeWriter: Writes[SchemaType] = Writes[SchemaType] {
     case s: SchemaString       => stringWriter.writes(s)
@@ -157,7 +157,7 @@ trait JSONSchemaWrites {
   lazy val anyConstraintWriter: OWrites[AnyConstraint] = OWrites[AnyConstraint] {
     anyConstraint =>
       asJsObject(Keywords.Any.Type, anyConstraint.schemaTypeAsString) ++
-      asJsObject(Keywords.Any.Id, anyConstraint.id) ++
+      asJsObject(keywords.id, anyConstraint.id) ++
       asJsObject(Keywords.Any.AllOf, anyConstraint.allOf) ++
       asJsObject(Keywords.Any.AnyOf, anyConstraint.anyOf) ++
       asJsObject(Keywords.Any.OneOf, anyConstraint.oneOf) ++

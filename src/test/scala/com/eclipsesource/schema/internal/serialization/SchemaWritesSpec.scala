@@ -7,6 +7,8 @@ import play.api.libs.json.{JsNumber, JsString, Json}
 
 class SchemaWritesSpec extends Specification {
 
+  import Version4._
+
   "JSON Schema Writes" should {
 
     "write string" in {
@@ -86,6 +88,7 @@ class SchemaWritesSpec extends Specification {
     }
 
     "write schema with definitions block" in {
+      implicit val version = Version4
       Json.toJson(
         SchemaNumber(
           NumberConstraints().copy(any = AnyConstraint().copy(definitions = Some(Map(

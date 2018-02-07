@@ -6,6 +6,13 @@ import java.net.URL
 
 class NotSpec extends Specification with JsonSpec {
 
-  validate("not")
+  "not draft4" in {
+    import Version4._
+    validate("not")
+  }
 
+  "not draft7" in {
+    import Version7._
+    validate("not", "draft7")
+  }
 }

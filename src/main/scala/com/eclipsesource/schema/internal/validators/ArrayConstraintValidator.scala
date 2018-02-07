@@ -17,8 +17,32 @@ trait ArrayConstraintValidator {
       minItemsRule <- validateMinItems
       maxItemsRule <- validateMaxItems
       uniqueRule <- validateUniqueness
-    } yield { minItemsRule |+| maxItemsRule |+| uniqueRule }
+      containsRule <- contains
+    } yield { minItemsRule |+| maxItemsRule |+| uniqueRule |+| containsRule }
     reader.run((arrayConstraints, resolutionContext)).repath(_.compose(resolutionContext.instancePath)).validate(json)
+  }
+
+  def contains(implicit lang: Lang): scalaz.Reader[(ArrayConstraints, SchemaResolutionContext), Rule[JsValue, JsValue]] = {
+    scalaz.Reader { case (constraints, context) =>
+        Rule.fromMapping {
+          json =>
+            (json, constraints.contains) match {
+              case (JsArray(values), Some(containsSchema)) =>
+                values.find(value => containsSchema.validate(value, context).isSuccess)
+                  .map(Success(_))
+                  .getOrElse(failure(
+                    Keywords.Array.Contains,
+                    Messages("err.contains"),
+                    context.schemaPath \ "contains",
+                    context.instancePath,
+                    json
+                  ))
+              case (js@JsArray(_), None) => Success(js)
+              case (other, _) => expectedArray(other, context)
+          }
+
+        }
+    }
   }
 
   def validateMaxItems(implicit lang: Lang): scalaz.Reader[(ArrayConstraints, SchemaResolutionContext), Rule[JsValue, JsValue]] =

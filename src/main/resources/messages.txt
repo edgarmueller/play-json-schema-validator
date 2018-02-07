@@ -28,6 +28,7 @@ any.any              = Instance does not match any of the schemas.
 any.one.of.none      = Instance does not match any schema.
 any.one.of.many      = Instance matches more than one schema.
 any.enum             = Instance is invalid enum value.
+any.const            = Instance does not match const value.
 
 comp.no.schema       = No schema applicable.
 
@@ -40,3 +41,6 @@ err.parse.json         = Could not parse JSON.
 err.max.depth          = Maximum recursion depth reached.
 err.dependencies.not.found = Dependency not found.
 err.definitions.not.found = Definition not found.
+err.false.schema       = Boolean false schema encountered.
+err.contains           = Array does not contain valid item.
+if.then.else           = Conditional validation failed.

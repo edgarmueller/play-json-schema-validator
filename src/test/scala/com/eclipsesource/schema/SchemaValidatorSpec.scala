@@ -13,6 +13,8 @@ class SchemaValidatorSpec extends PlaySpecification {
 
   def createApp: Application = new GuiceApplicationBuilder().routes(Assets.routes(getClass)).build()
 
+  import Version4._
+
   val schema: SchemaType = JsonSource.schemaFromString(
     """{
       |  "type": "object",
@@ -47,6 +49,7 @@ class SchemaValidatorSpec extends PlaySpecification {
   )
 
   "SchemaValidator" should {
+    import Version4._
 
     "validate additionalProperties schema constraint via $ref" in
       new WithServer(app = createApp, port = 1234) {

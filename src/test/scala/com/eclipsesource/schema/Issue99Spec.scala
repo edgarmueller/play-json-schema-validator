@@ -1,9 +1,12 @@
 package com.eclipsesource.schema
 
+import com.eclipsesource.schema.internal.serialization.JSONSchemaReads
 import org.specs2.mutable.Specification
 import play.api.libs.json.Json
 
 class Issue99Spec extends Specification {
+
+  import Version4._
 
   "Issue 99 Spec" should {
 

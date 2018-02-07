@@ -5,6 +5,8 @@ import org.specs2.mutable.Specification
 import play.api.libs.json.JsNumber
 
 class BigNumSpec extends Specification with JsonSpec {
+
+  import Version4._
   validate("optional/bignum")
 
   "Bignum" should {

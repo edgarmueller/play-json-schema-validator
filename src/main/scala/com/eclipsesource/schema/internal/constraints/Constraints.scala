@@ -33,9 +33,15 @@ object Constraints {
                            oneOf: Option[Seq[SchemaType]] = None,
                            definitions: Option[Map[String, SchemaType]] = None,
                            enum: Option[Seq[JsValue]] = None,
+                           const: Option[JsValue] = None,
                            not: Option[SchemaType] = None,
                            description: Option[String] = None,
-                           id: Option[String] = None)
+                           id: Option[String] = None,
+                           _if: Option[SchemaType] = None,
+                           _then: Option[SchemaType] = None,
+                           _else: Option[SchemaType] = None
+                          )
+                          (implicit schemaVersion: SchemaVersion = Version4)
     extends Constraint with Resolvable {
 
     type A = AnyConstraint
@@ -54,7 +60,7 @@ object Constraints {
       )
       case Keywords.Any.Enum => enum.map(e => SchemaValue(JsArray(e)))
       case Keywords.Any.Not => not
-      case Keywords.Any.Id => id.map(i => SchemaValue(JsString(i)))
+      case other if other == schemaVersion.keywords.id => id.map(i => SchemaValue(JsString(i)))
       case _ => None
     }
 
@@ -67,6 +73,7 @@ object Constraints {
           (oneOf ++ otherAny.oneOf).reduceOption(_ ++ _),
           (definitions ++ otherAny.definitions).reduceOption(_ ++ _),
           (enum ++ otherAny.enum).reduceOption(_ ++ _),
+          const orElse otherAny.const,
           // TODO: could be improved by merging both schemas
           not orElse otherAny.not
           // id is not taken care of
@@ -85,6 +92,7 @@ object Constraints {
                                required: Option[Seq[String]] = None,
                                minProperties: Option[Int] = None,
                                maxProperties: Option[Int] = None,
+                               propertyNames: Option[SchemaType] = None,
                                any: AnyConstraint = AnyConstraint(None, None, None, None))
     extends HasAnyConstraint with Resolvable {
 
@@ -113,6 +121,8 @@ object Constraints {
           (required ++ otherConstraints.required).reduceOption(_ ++ _),
           minProperties orElse otherConstraints.minProperties,
           maxProperties orElse otherConstraints.maxProperties,
+          // TODO
+          propertyNames orElse otherConstraints.propertyNames,
           any.merge(otherConstraints.any)
         )
       case withAnyConstraints: HasAnyConstraint => copy(any = any.merge(withAnyConstraints.any))
@@ -132,6 +142,7 @@ object Constraints {
                               minItems: Option[Int] = None,
                               additionalItems: Option[SchemaType] = None,
                               unique: Option[Boolean] = None,
+                              contains: Option[SchemaType] = None,
                               any: AnyConstraint = AnyConstraint()) extends HasAnyConstraint {
 
     type A = ArrayConstraints
@@ -150,6 +161,7 @@ object Constraints {
         minItems orElse otherArrayConstraints.minItems,
         additionalItems orElse otherArrayConstraints.additionalItems,
         unique orElse otherArrayConstraints.unique,
+        contains orElse otherArrayConstraints.contains,
         any.merge(otherArrayConstraints.any)
       )
       case withAnyConstraints: HasAnyConstraint => copy(any = any.merge(withAnyConstraints.any))
@@ -157,7 +169,7 @@ object Constraints {
     }
 
     override def subSchemas: Set[SchemaType] =
-      additionalItems.map(Set(_)).getOrElse(Set.empty) ++ any.subSchemas
+      (additionalItems.map(Set(_)) |+|  contains.map(Set(_))).getOrElse(Set.empty) ++ any.subSchemas
   }
 
   case class Minimum(min: BigDecimal, isExclusive: Option[Boolean])

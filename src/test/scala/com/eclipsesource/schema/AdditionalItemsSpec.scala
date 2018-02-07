@@ -2,13 +2,22 @@ package com.eclipsesource.schema
 
 import com.eclipsesource.schema.test.JsonSpec
 import org.specs2.mutable.Specification
-import play.api.libs.json.{JsNumber, JsArray}
+import play.api.libs.json.{JsArray, JsNumber}
 
 class AdditionalItemsSpec extends Specification with JsonSpec {
 
-  validate("additionalItems")
+  "validate draft4" in {
+    import Version4._
+    validate("additionalItems", "draft4")
+  }
+
+  "validate draft7" in {
+    import Version7._
+    validate("additionalItems", "draft7")
+  }
 
   "AdditionalItems" should {
+    import Version7._
     val schema = JsonSource.schemaFromString(
       """{
         |  "items": [{}, {}, {}],
@@ -20,5 +29,4 @@ class AdditionalItemsSpec extends Specification with JsonSpec {
       SchemaValidator().validate(schema, data).isSuccess must beTrue
     }
   }
-
 }
